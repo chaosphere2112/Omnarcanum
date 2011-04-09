@@ -1,15 +1,23 @@
 img = display.newImage("images/p1.png",140,200, true )
 t=display.newText("ohai", 100,300, nil, 30)
+b=display.newImage
 run = 0;
 calx=0;
 caly=0;
+
+local buttonlistener = function (event)
+	run=0
+	img.x=140
+	img.y=200
+	return true
+end
 
 local myListener = function (event)
 	if (run==0) then
 		calx=event.xGravity
 		caly=event.yGravity
 		t.text="cal is: "..calx..","..caly
-		run=1;
+		run=1 
 	end
 	if (event.name == "accelerometer") then
 		local x=event.xGravity
@@ -31,6 +39,10 @@ local myListener = function (event)
 			img.y=img.y-10*(y)
 		end
 	end
+end
+
+local function update()
+	
 end
 
 system.setAccelerometerInterval(50)
