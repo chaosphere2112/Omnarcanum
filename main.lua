@@ -1,5 +1,4 @@
 require "sprite"
-t=display.newText("ohai", 100,300, nil, 30)
 b=display.newImage("images/Button.png",200,300, true)
 bd=display.newImage("images/ButtonDown.png",200,300, false)
 bd.isVisible=false;
@@ -18,8 +17,14 @@ for q=1,12,1 do
 	end
 end
 
+--TO DO:
+	--Variables for accel data
+	--Migration of movement to update function
+	--Implementation of xml parser to interpret a map file
+
 img = display.newImage("images/p1.png",140,200, true )
 
+t=display.newText("ohai", 100,300, nil, 30)
 
 sp2.x=200;
 sp2.y=200;
@@ -63,18 +68,18 @@ local myListener = function (event)
 			for i,v in ipairs(tilelist) do
 				for i2,v2 in ipairs(v) do
 					v2.x=v2.x+15*x
+					t.text="x"
 					if (x<0) then
 						v2:setReferencePoint(display.CenterLeftReferencePoint)
 						if(v2.x<0) then
-							tilelist[i-1][i2].x=tilelist[i-1][i2]+display.contentWidth
-							t.setText("h");
+							t.text="on top"
 						end
 						v2:setReferencePoint(display.CenterReferencePoint)
 					else
 						v2:setReferencePoint(display.CenterRightReferencePoint)
 						if (v2.x>display.contentWidth) then
-							tilelist[i+1][i2].x=tilelist[i+1][i2]-display.contentWidth
-							t.setText("H");
+
+							t.text="on bottom"
 						end
 						v2:setReferencePoint(display.CenterReferencePoint)
 					end
@@ -84,6 +89,7 @@ local myListener = function (event)
 			for i,v in ipairs(tilelist) do
 				for i2, v2 in ipairs(v) do
 					v2.y=v2.y-10*y
+					t.text="y"
 				end
 			end
 		end
