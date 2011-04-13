@@ -22,7 +22,8 @@ local ext=".png";
 --Now whenever we load a map, the file will be mapstr..zonestr..room..ext  (See how clever I am?)
 --Default the location to 0,0, then move it based on width so that it's appropriately located.
 local map=display.newImage(mapstr..zonestr..room..ext,0,0,true )
-
+map.x=160;
+map.y=160;
 
 
 --Acceleration trackers
@@ -51,7 +52,9 @@ bd=display.newImage("images/ButtonDown.png",200,300, false)
 bd.isVisible=false;
 --TO DO:
 	--Map movement
-	--Implementation of xml parser to interpret a map file
+	--Direction tracking
+	--Spell casting
+	--Spell interaction with objects
 
 img = display.newImage("images/p1.png",160,240, true )
 img.x=160;
@@ -59,6 +62,8 @@ img.y=240;
 
 t=display.newText("ohai", 100,300, nil, 30)
 t.rotation=90;
+t2=display.newText("", 200,300,nil,30)
+t2.rotation=90;
 run = 0;
 calx=0;
 caly=0;
@@ -115,19 +120,28 @@ local function update()
 		if (math.abs(x)>math.abs(y)) then
 			--If the movement is within the bounds of the map, move the map
 			--If the movement is within the bounds of the screen, move the character
-			if (map.x-15*x-display.contentWidth/2>0 and map.x-15*x<map.width) then
+			if (x>0) then
+				t.text="x>0"
+			else
+				t.text="x<=0"
+			end
+			if (img.x>display.contentWidth/2-5 and img.x<display.contentWidth/2+5 and map.x-15*x>map.width/2-display.contentWidth and map.x-15*x<map.width-display.contentWidth) then
 				map.x=map.x-15*x
+				img.x=display.contentWidth/2
 			else
-				img.x=img.x+15*x
-				t.text=""..x;
+				if(img.x+15*x>0 and img.x+15*x<display.contentWidth) then
+					img.x=img.x+15*x
+				end
 			end
+			t2.text=math.floor(map.x)..""
+
 		else
-			if (map.y+10*y>0 and map.y+display.contentHeight/2+10*x<map.height) then
+			--BOUNDARY FOR LEFT SIDE NEEDED
+			if (map.y+10*y > map.height-display.contentHeight) then
 				map.y=map.y+10*y
-			else
-				img.y=img.y-10*y
-				t.text=""..y
 			end
+			t.text=math.floor(map.y+10*y)
+			t2.text=math.floor(map.y)
 		end
 	end
 	xaccel=0;
