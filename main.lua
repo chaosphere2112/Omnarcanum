@@ -67,7 +67,6 @@ t2.rotation=90;
 run = 0;
 calx=0;
 caly=0;
-
 local buttonlistener = function (event)
 	if (event.phase=="began")then
 		b.isVisible=false;
@@ -117,6 +116,7 @@ local function update()
 	if (math.abs(y)<.01)then
 		y=0;
 	end
+	
 		if (math.abs(x)>math.abs(y)) then
 			--If the movement is within the bounds of the map, move the map
 			--If the movement is within the bounds of the screen, move the character
@@ -137,10 +137,14 @@ local function update()
 
 		else
 			--BOUNDARY FOR LEFT SIDE NEEDED
-			if (map.y+10*y > map.height-display.contentHeight) then
+			if (img.y>display.contentHeight/2-5 and img.y<display.contentHeight/2+5 and map.y+10*y > map.height-display.contentHeight and map.y+10*y-map.height/2<0) then
 				map.y=map.y+10*y
+				img.y=display.contentHeight/2
+			else
+				if (img.y-10*y>0 and img.y+10*y<display.contentHeight) then
+					img.y=img.y-10*y
+				end
 			end
-			t.text=math.floor(map.y+10*y)
 			t2.text=math.floor(map.y)
 		end
 	end

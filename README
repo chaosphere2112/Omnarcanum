@@ -5,5 +5,7 @@ It is a game called Omnarcanum, written in Lua and compiled using Corona SDK.
 It will be released on iOS and Android at the completion of my project.
 
 
+Done:
+	Movement
+
 Issues:
-	Finding boundary point of left side of image programmatically
