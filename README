@@ -3,3 +3,7 @@ This project is my Senior Project for CSU Chico.
 It is a game called Omnarcanum, written in Lua and compiled using Corona SDK.
 
 It will be released on iOS and Android at the completion of my project.
+
+
+Issues:
+	Having issues programmatically determining location

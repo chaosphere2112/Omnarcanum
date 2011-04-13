@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" width="50" height="50" tilewidth="32" tileheight="32">
- <tileset firstgid="1" name="Layer1" tilewidth="32" tileheight="32" spacing="1" margin="1">
-  <image source="../../oa/OASRC/Resources/brick_tiles_1.png" width="199" height="34"/>
- </tileset>
- <layer name="Tile Layer 1" width="50" height="50">
-  <data>
+<map width="50" height="50">
+ <layer tileset="/brick_tiles_1.png">
+  <row id="1">
    <tile gid="2"/>
    <tile gid="2"/>
    <tile gid="2"/>
@@ -55,6 +52,8 @@
    <tile gid="2"/>
    <tile gid="2"/>
    <tile gid="2"/>
+ </row>
+ <row id="2">
    <tile gid="2"/>
    <tile gid="2"/>
    <tile gid="2"/>
@@ -105,6 +104,8 @@
    <tile gid="2"/>
    <tile gid="2"/>
    <tile gid="2"/>
+ </row>
+ <row id="3">
    <tile gid="2"/>
    <tile gid="2"/>
    <tile gid="2"/>
@@ -155,6 +156,8 @@
    <tile gid="2"/>
    <tile gid="2"/>
    <tile gid="2"/>
+ </row>
+ <row id=4>
    <tile gid="2"/>
    <tile gid="2"/>
    <tile gid="2"/>
@@ -204,6 +207,8 @@
    <tile gid="2"/>
    <tile gid="2"/>
    <tile gid="2"/>
+  </row>
+  <row id=5>
    <tile gid="2"/>
    <tile gid="2"/>
    <tile gid="2"/>
@@ -253,6 +258,8 @@
    <tile gid="2"/>
    <tile gid="2"/>
    <tile gid="2"/>
+ </row>
+ <row id="6">
    <tile gid="2"/>
    <tile gid="2"/>
    <tile gid="2"/>
@@ -303,6 +310,8 @@
    <tile gid="2"/>
    <tile gid="2"/>
    <tile gid="2"/>
+ </row>
+ <row id="7">
    <tile gid="2"/>
    <tile gid="2"/>
    <tile gid="2"/>
@@ -353,6 +362,9 @@
    <tile gid="2"/>
    <tile gid="2"/>
    <tile gid="2"/>
+   
+ </row>
+ <row id="8">
    <tile gid="2"/>
    <tile gid="2"/>
    <tile gid="2"/>
@@ -403,6 +415,9 @@
    <tile gid="2"/>
    <tile gid="2"/>
    <tile gid="2"/>
+
+ </row>
+ <row id="9">
    <tile gid="2"/>
    <tile gid="2"/>
    <tile gid="2"/>
@@ -452,6 +467,9 @@
    <tile gid="2"/>
    <tile gid="2"/>
    <tile gid="2"/>
+
+ </row>
+ <row id="10">
    <tile gid="2"/>
    <tile gid="2"/>
    <tile gid="2"/>
@@ -501,6 +519,9 @@
    <tile gid="2"/>
    <tile gid="2"/>
    <tile gid="2"/>
+   
+ </row>
+ <row id="11">
    <tile gid="2"/>
    <tile gid="2"/>
    <tile gid="2"/>
@@ -550,6 +571,9 @@
    <tile gid="2"/>
    <tile gid="2"/>
    <tile gid="2"/>
+
+ </row>
+ <row id="12">
    <tile gid="2"/>
    <tile gid="2"/>
    <tile gid="2"/>
@@ -2405,6 +2429,7 @@
    <tile gid="2"/>
    <tile gid="2"/>
    <tile gid="2"/>
+   <tile gid="1"/>
    <tile gid="2"/>
    <tile gid="2"/>
    <tile gid="2"/>
@@ -2454,8 +2479,7 @@
    <tile gid="2"/>
    <tile gid="2"/>
    <tile gid="2"/>
-   <tile gid="2"/>
-   <tile gid="2"/>
+   <tile gid="1"/>
    <tile gid="2"/>
    <tile gid="2"/>
    <tile gid="2"/>
