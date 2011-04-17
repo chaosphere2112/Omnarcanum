@@ -1,0 +1,13 @@
+.rconfig Format Guide:
+
+entranceX
+entranceY
+exitX
+exitY
+exitW
+exitH
+wall#X
+wall#Y
+wall#W
+wall#H
+...

@@ -4,8 +4,11 @@ It is a game called Omnarcanum, written in Lua and compiled using Corona SDK.
 
 It will be released on iOS and Android at the completion of my project.
 
+Notes:
+	Working on a simple Lua parser to plow through a file to determine relevant info about a map.  Hope to have it working by tomorrow.	
 
 Done:
-	Movement
+	Movement- EDITED: Fixed bugs.  God, sometimes I feel dumb. Had some slight errors in edge detection.  System is foolproof- hopefully.
+	Room Transitions
 
 Issues:
