@@ -1,5 +1,6 @@
 .rconfig Format Guide:
-
+roomX
+roomY
 entranceX
 entranceY
 exitX

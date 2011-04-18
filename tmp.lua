@@ -1,5 +1,10 @@
 io.input("images/maps/1.rconfig")
-local a=io.read("*line")
-i,b=string.find(a,"(%n+)%s*(%a+)=(%a+)")
-print(i)
-print(b)
+while true do
+	local a=io.read("*line")
+	if (a==nil) then
+		print("End of file")
+		break
+	end
+	_, _, d,n, m = string.find(a, "(%w+)%s*(%w+)%s*=%s*(%w+)")
+	print(d,n, m)  --> 17  7  1990
+end

@@ -9,6 +9,80 @@ local sp2=sprite.newSprite(sp);
 local q;
 ]]--
 
+local walls={}
+local exit={}
+local entrance={}
+local map={}
+local img={}
+local function parse(input)
+	io.input(system.pathForFile(input))
+	while true do
+		local a=io.read("*line")
+		if (a==nil) then
+			print("End of input")
+			break
+		end
+
+		_,_,obj,var,val = string.find(a,"(%w+)%s*(%w+)%s*=%s*(-?%w+)")
+		if (obj=="room") then
+			if (var=="X") then
+				map.x=tonumber(val)+map.width/2
+			end
+
+			if (var=="Y") then
+				map.y=tonumber(val)+map.height/2
+			end
+		end
+		
+		if (obj=="entrance") then
+			if (var=="X") then
+				img.x=tonumber(val)
+			end
+			if (var=="Y") then
+				img.y=tonumber(val)
+			end
+		end
+		if (obj=="exit") then
+			if (var=="X") then
+				exit.x=tonumber(val)+map.x
+			end
+			if (var=="Y") then
+				exit.y=tonumber(val)+map.y
+			end
+			if (var=="W") then
+				exit.width=tonumber(val)
+			end
+			if (var=="H") then
+				exit.height=tonumber(val)
+			end
+		end
+		if (string.match(obj,"%d+")) then
+			--Initialize the wall object with the index obj
+			obj=tonumber(obj)
+			if(walls[obj]==nil) then
+				walls[obj]=display.newRect(0,0,0,0)
+				walls[obj]:toBack()
+				walls[obj].isVisible=true
+				walls[obj].alpha=.5
+			end
+			if (var=="X") then
+				walls[obj].x=map.x+tonumber(val)
+			end
+			if (var=="Y") then
+				walls[obj].y=map.y+tonumber(val)
+			end
+			if (var=="W") then
+				walls[obj].width=tonumber(val)
+			end
+			if (var=="H") then
+				walls[obj].height=tonumber(val)
+			end
+		end
+	end
+	io.input()
+end
+
+
 --Initialize info for Map loading
 	--Base string of the map location
 local mapstr="images/maps/";
@@ -22,9 +96,10 @@ local ext=".png";
 
 --Now whenever we load a map, the file will be mapstr..zonestr..room..ext  (See how clever I am?)
 --Default the location to 0,0, then move it based on width so that it's appropriately located.
-local map=display.newImage(mapstr..zonestr..room..ext,0,0,true )
+map=display.newImage(mapstr..zonestr..room..ext,0,0,true )
 map.x=160;
 map.y=160;
+
 
 local old;
 
@@ -34,8 +109,9 @@ local xaccel=0;
 local yaccel=0;
 local poll=0;
 
-local exit=display.newRect(0,0,64,128)
-exit.isVisible=false;
+exit=display.newRect(0,0,64,128)
+exit.alpha=.5
+--exit.isVisible=false;
 exit.x=map.x+map.width/2-exit.width/2
 exit.y=map.y+map.height/2-2*exit.height
 
@@ -71,14 +147,16 @@ img = display.newImage("images/p1.png",160,240, true )
 img.x=160;
 img.y=240;
 
+parse(mapstr..room..".rconfig")
 t=display.newText("ohai", 100,300, nil, 30)
 t.rotation=90;
-t.text="w="..map.width.." h="..map.height
+t.text=walls[1].width
 t2=display.newText("", 200,300,nil,30)
 t2.rotation=90;
 run = 0;
 calx=0;
 caly=0;
+img:toFront()
 local removeObject= function(obj)
 	if (obj~=nil) then
 		obj:removeSelf()
@@ -125,7 +203,7 @@ local myListener = function (event)
 end
 
 local function overlap(a, b)
-	if (a.x+a.width/2>b.x-b.width/2 and a.x-a.width/2<b.x+b.width and a.y+a.height/2>b.y-b.height/2 and a.y-a.height/2<b.y+b.height/2) then
+	if (a.x+a.width/2>b.x-b.width/2 and a.x-a.width/2<b.x+b.width/2 and a.y+a.height/2>b.y-b.height/2 and a.y-a.height/2<b.y+b.height/2) then
 		return true
 	else
 		return false
@@ -143,37 +221,66 @@ local function update()
 		if (math.abs(y)<.01)then
 			y=0;
 		end	
+
 		if (math.abs(x)>math.abs(y)) then
 			--If the movement is within the bounds of the map, move the map
 			--If the movement is within the bounds of the screen, move the character
 
 			if (img.x>display.contentWidth/2-5 and img.x<display.contentWidth/2+5 and map.x-15*x+map.width/2>display.contentWidth and map.x-15*x-map.width/2<0) then
-				map:translate(-15*x,0)
-				exit:translate(-15*x,0)
+				x=math.floor(-15*x)
+				map:translate(x,0)
+				exit:translate(x,0)
+				local q
+				for q=1,#walls,1 do
+					walls[q]:translate(x,0)
+				end
 				img.x=display.contentWidth/2
 			else
 				if((x<0 and img.x+15*x-img.width/2>0) or (x>0 and img.x+15*x+img.width/2<display.contentWidth)) then
-					img:translate(15*x,0)
+					local wallcheck=false
+					local q
+					local qh
+					for q=1,#walls,1 do
+						if (overlap(img,walls[q]) and ((x>0 and img.x<walls[q].x) or (x<0 and img.x>walls[q].x))) then
+							wallcheck=true
+							t.text="Overlap with wall "..q
+						end
+					end
+					if (wallcheck==false) then
+						x=math.floor(15*x)
+						img:translate(x,0)
+					end
 				end
 			end
-			t2.text=math.floor(map.x)..""
 		else
 			if (img.y>display.contentHeight/2-5 and img.y<display.contentHeight/2+5 and map.y+10*y+map.height/2>display.contentHeight and map.y+10*y-map.height/2<0) then
+				y=math.floor(10*y)
 				img.y=display.contentHeight/2
-				map:translate(0,10*y)
-				t.text="holy crap"
-				exit:translate(0,10*y)
-			else
-				if (map.y+10*y>map.height-display.contentHeight) then
-					t.text="2 fail"
-				else
-					t.text="1 fail"
+				map:translate(0,y)
+				local q
+				for q=1,#walls,1 do
+					walls[q]:translate(0,y)
 				end
+				exit:translate(0,y)
+			else
 				if ((y>0 and img.y-10*y-img.height/2>0) or (y<0 and img.y+10*y+img.height/2<display.contentHeight)) then
-					img:translate(0,-10*y)
+					local wallcheck=false
+					local q
+					local qh
+					for q=1,#walls,1 do
+						--stuck in corners- Address this.
+						if (overlap(img,walls[q]) and ((y>0 and img.y>walls[q].y) or (y<0 and img.y<walls[q].y))) then
+							wallcheck=true
+							qh=q
+							t.text="Overlap with wall "..q
+						end
+					end
+					if (wallcheck==false) then
+						y=math.floor(-10*y)
+						img:translate(0,y)
+					end
 				end
 			end
-			t2.text=math.floor(map.y)
 		end
 	end
 	if (overlap(img,exit))then
