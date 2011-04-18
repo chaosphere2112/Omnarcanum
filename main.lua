@@ -14,6 +14,7 @@ local exit={}
 local entrance={}
 local map={}
 local img={}
+local first=true
 local function parse(input)
 	io.input(system.pathForFile(input))
 	while true do
@@ -36,10 +37,19 @@ local function parse(input)
 		
 		if (obj=="entrance") then
 			if (var=="X") then
-				img.x=tonumber(val)
+				if (first==true) then
+					img.x=tonumber(val)
+				else
+					transition.to(img, {time=1500, x=tonumber(val)})
+				end
 			end
 			if (var=="Y") then
-				img.y=tonumber(val)
+				if (first==true) then
+					first=false
+					img.y=tonumber(val)
+				else
+					transition.to(img, {time=1500, y=tonumber(val)})
+				end
 			end
 		end
 		if (obj=="exit") then
@@ -284,7 +294,6 @@ local function update()
 		end
 	end
 	if (overlap(img,exit))then
-		transition.to(img, {time=1500, transition=easing.inOutQuad, x=display.contentWidth/2, y=display.contentHeight/2})
 		old=map;
 		transition.to(old, {time=750, alpha=0, onComplete=removeObject})
 		room=room+1;
@@ -294,6 +303,7 @@ local function update()
 		map.y=160
 		map:toBack()
 		transition.to(map, {time=750, delay=750, alpha=1})
+		parse(mapstr..room..".rconfig")
 		exit.x=1000
 		exit.y=1000
 	end
