@@ -4,14 +4,23 @@ It is a game called Omnarcanum, written in Lua and compiled using Corona SDK.
 
 It will be released on iOS and Android at the completion of my project.
 
-Notes:
-	Parser done.  Walls implemented. Content development to be considered: rconfig files for each map need to be made.  Maps need graphical additions like walls and exits/entrances.  Moving on to game objects- Start with scarecrows (_keep track of what effects them_). 2.rconfig is completed-ish
+Code Notes:
+	Parser done.  Walls implemented. Content development to be considered: rconfig files for each map need to be made.  Maps need graphical additions like walls and exits/entrances.  Moving on to game objects- Start with scarecrows (_keep track of what effects them_). 2.rconfig is completed-ish.  Need to come up with a good collision system if I want to not run through enemies and objects.  Too damn many checks.  Don't be like Jack.
+
+
+Content Notes:
+	.rconfig file done for maps 1, 2, 3, and 4
+	Sprite second drafts completed
+
 Done:
 	Movement- EDITED: Fixed bugs.  God, sometimes I feel dumb. Had some slight errors in edge detection.  System is foolproof- hopefully. EDITED: So, apparently not.  Overlap code was erroneous (missed a /2 on the width of an object).
 	Room Transitions
 	rconfig parser
 		-Extensible (Add a new field to rconfig, and it'll be a simple task to add the addtional check to the parse function)
+	Objects added to rconfig (includes elemental vulnerabilities)
+	Player sprite changes based on current direction
+	Direction is stored
 
 Issues:
 	Player gets stuck in corners.  Issue is obvious (Need to somehow determine if we're appropriately bumping into a wall... ideas?  Currently it's just a blank check to see if there's an overlap and a dismount option (if you're trying to go in the other direction, then you're free to move.) To fix the issue, we have to determine which directions are relevant to a wall.  We can plausibly add another piece of info the rconfig for walls, and tack on another field into the tables... but that's the work for another day.)
-	Issue with 2.rconfig- Exit not appearing in app.
+	Issue with 2.rconfig- Exit not appearing in app.-Resolved (Was setting exit location after rconfig parse in the exit overlap check)

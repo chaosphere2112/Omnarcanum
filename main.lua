@@ -3,18 +3,22 @@ require "sprite"
 system.setIdleTimer(false)
 
 display.setStatusBar(display.HiddenStatusBar )
---[[local tile= sprite.newSpriteSheet("images/brick_tiles_1.png",32 , 32)
-local sp=sprite.newSpriteSet(tile,1,1);
-local sp2=sprite.newSprite(sp);
-local q;
-]]--
 
+local psprite= sprite.newSpriteSheet("images/playerss1.png",32,32)
+local p =sprite.newSpriteSet(psprite,1,4);
+local player={};
+player=sprite.newSprite(p)
+player.x=160
+player.y=160
+local objects={};
+local direction;
 local walls={}
 local exit={}
 local entrance={}
 local map={}
 local img={}
 local first=true
+local curobj;
 local function parse(input)
 	io.input(system.pathForFile(input))
 	while true do
@@ -24,7 +28,7 @@ local function parse(input)
 			break
 		end
 
-		_,_,obj,var,val = string.find(a,"(%w+)%s*(%w+)%s*=%s*(-?%w+)")
+		_,_,obj,var,val = string.find(a,"(%w+)%s*(%w+)%s*=%s*(-?%w+%.?%w*)")
 		if (obj=="room") then
 			if (var=="X") then
 				map.x=tonumber(val)+map.width/2
@@ -35,21 +39,71 @@ local function parse(input)
 			end
 		end
 		
+		if (obj=="object") then
+			if (var=="img") then
+				curobj=#objects+1
+				objects[curobj]=display.newImage("images/"..val, 0,0,true)
+
+				objects[curobj].fire=false
+				objects[curobj].ice=false
+				objects[curobj].water=false
+				objects[curobj].light=false
+				objects[curobj].earth=false
+				objects[curobj].metal=false
+				objects[curobj].nat=false
+				objects[curobj].air=false
+			end
+			if (var=="X") then
+				objects[curobj].x=tonumber(val)	
+			end
+			if (var=="Y") then
+				objects[curobj].y=tonumber(val)
+			end
+			if (var=="fire") then
+				objects[curobj].fire=true;
+			end
+			if (var=="ice") then
+				objects[curobj].ice=true;
+			end
+			if (var=="light") then
+				objects[curobj].light=true;
+			end
+			if (var=="air") then
+				objects[curobj].air=true;
+			end
+			if(var=="water") then
+				objects[curboj].water=true;
+			end
+			if(var=="earth") then
+				objects[curobj].earth=true
+			end
+			if (var=="metal") then
+				objects[curobj].metal=true;
+			end
+			if (var=="nat") then
+				objects[curobj].nat=true;
+			end
+		end
+
 		if (obj=="entrance") then
 			if (var=="X") then
 				if (first==true) then
-					img.x=tonumber(val)
+					player.x=tonumber(val)
 				else
-					transition.to(img, {time=1500, x=tonumber(val)})
+					transition.to(player, {time=1500, x=tonumber(val)})
 				end
 			end
 			if (var=="Y") then
 				if (first==true) then
 					first=false
-					img.y=tonumber(val)
+					player.y=tonumber(val)
 				else
-					transition.to(img, {time=1500, y=tonumber(val)})
+					transition.to(player, {time=1500, y=tonumber(val)})
 				end
+			end
+			if (var=="dir") then
+				direction=tonumber(val)
+				player.currentFrame=(tonumber(val))
 			end
 		end
 		if (obj=="exit") then
@@ -71,7 +125,6 @@ local function parse(input)
 			obj=tonumber(obj)
 			if(walls[obj]==nil) then
 				walls[obj]=display.newRect(0,0,0,0)
-				walls[obj]:toBack()
 				walls[obj].isVisible=true
 				walls[obj].alpha=.5
 			end
@@ -147,26 +200,26 @@ bd.isVisible=false;
 
 
 --TO DO:
-	--Map movement
-	--Direction tracking
 	--Spell casting
 	--Spell interaction with objects
 
-
+--[[
 img = display.newImage("images/p1.png",160,240, true )
 img.x=160;
 img.y=240;
-
+]]--
 parse(mapstr..room..".rconfig")
 t=display.newText("ohai", 100,300, nil, 30)
 t.rotation=90;
-t.text=walls[1].width
+t.text=exit.x..","..exit.y
 t2=display.newText("", 200,300,nil,30)
 t2.rotation=90;
 run = 0;
 calx=0;
 caly=0;
-img:toFront()
+
+player:toFront()
+--img:toFront()
 local removeObject= function(obj)
 	if (obj~=nil) then
 		obj:removeSelf()
@@ -182,8 +235,8 @@ local buttonlistener = function (event)
 		run=0
 		b.isVisible=true
 		bd.isVisible=false
-		img.x=160
-		img.y=240
+		player.x=160
+		player.y=240
 		meX=32*9;
 		meY=32*9;
 	end
@@ -194,7 +247,6 @@ local myListener = function (event)
 	if (run==0) then
 		calx=event.xGravity
 		caly=event.yGravity
-
 		run=1 
 	end
 
@@ -203,12 +255,9 @@ local myListener = function (event)
 		local y=event.yGravity
 		x=x-calx;
 		y=y-caly;
-		
 		xaccel=xaccel+x;
 		yaccel=yaccel+y;
 		poll= poll+1;
-
-
 	end
 end
 
@@ -235,8 +284,8 @@ local function update()
 		if (math.abs(x)>math.abs(y)) then
 			--If the movement is within the bounds of the map, move the map
 			--If the movement is within the bounds of the screen, move the character
-
-			if (img.x>display.contentWidth/2-5 and img.x<display.contentWidth/2+5 and map.x-15*x+map.width/2>display.contentWidth and map.x-15*x-map.width/2<0) then
+			local mapmove=false
+			if (player.x>display.contentWidth/2-5 and player.x<display.contentWidth/2+5 and map.x-15*x+map.width/2>display.contentWidth and map.x-15*x-map.width/2<0) then
 				x=math.floor(-15*x)
 				map:translate(x,0)
 				exit:translate(x,0)
@@ -244,42 +293,74 @@ local function update()
 				for q=1,#walls,1 do
 					walls[q]:translate(x,0)
 				end
-				img.x=display.contentWidth/2
+				player.x=display.contentWidth/2
+				if (x>0) then
+					direction=1;
+				else
+					direction=3;
+				end
+				mapmove=true
 			else
-				if((x<0 and img.x+15*x-img.width/2>0) or (x>0 and img.x+15*x+img.width/2<display.contentWidth)) then
+				if((x<0 and player.x+15*x-player.width/2>0) or (x>0 and player.x+15*x+player.width/2<display.contentWidth)) then
 					local wallcheck=false
 					local q
 					local qh
 					for q=1,#walls,1 do
-						if (overlap(img,walls[q]) and ((x>0 and img.x<walls[q].x) or (x<0 and img.x>walls[q].x))) then
+						if (overlap(player,walls[q]) and ((x>0 and player.x<walls[q].x) or (x<0 and player.x>walls[q].x))) then
 							wallcheck=true
 							t.text="Overlap with wall "..q
 						end
 					end
 					if (wallcheck==false) then
 						x=math.floor(15*x)
-						img:translate(x,0)
+						player:translate(x,0)
 					end
 				end
 			end
+
+				if (x>0) then
+					player.currentFrame=1
+				else
+					player.currentFrame=3
+				end
+				if (mapmove==false) then
+					if(x>0) then
+						player.currentFrame=3
+					else
+						player.currentFrame=1
+					end
+				end
 		else
-			if (img.y>display.contentHeight/2-5 and img.y<display.contentHeight/2+5 and map.y+10*y+map.height/2>display.contentHeight and map.y+10*y-map.height/2<0) then
+			local mapmove=false
+			if (player.y>display.contentHeight/2-5 and player.y<display.contentHeight/2+5 and map.y+10*y+map.height/2>display.contentHeight and map.y+10*y-map.height/2<0) then
 				y=math.floor(10*y)
-				img.y=display.contentHeight/2
+				player.y=display.contentHeight/2
 				map:translate(0,y)
 				local q
 				for q=1,#walls,1 do
 					walls[q]:translate(0,y)
 				end
 				exit:translate(0,y)
+				if (y>0)then
+					direction=4;
+				else
+					direction=2;
+				end
+				t.text=direction
+				mapmove=true
 			else
-				if ((y>0 and img.y-10*y-img.height/2>0) or (y<0 and img.y+10*y+img.height/2<display.contentHeight)) then
+				if ((y>0 and player.y-10*y-player.height/2>0) or (y<0 and player.y+10*y+player.height/2<display.contentHeight)) then
 					local wallcheck=false
 					local q
 					local qh
+					if (y>0) then
+						direction=2
+					else
+						direction=4
+					end
 					for q=1,#walls,1 do
 						--stuck in corners- Address this.
-						if (overlap(img,walls[q]) and ((y>0 and img.y>walls[q].y) or (y<0 and img.y<walls[q].y))) then
+						if (overlap(player,walls[q]) and ((y>0 and player.y>walls[q].y) or (y<0 and player.y<walls[q].y))) then
 							wallcheck=true
 							qh=q
 							t.text="Overlap with wall "..q
@@ -287,13 +368,26 @@ local function update()
 					end
 					if (wallcheck==false) then
 						y=math.floor(-10*y)
-						img:translate(0,y)
+						player:translate(0,y)
 					end
 				end
 			end
+			
+				if (y>0) then
+					player.currentFrame=4
+				else
+					player.currentFrame=2
+				end
+				if (mapmove==false) then
+					if (y>0) then
+						player.currentFrame=2
+					else
+						player.currentFrame=4
+					end
+				end
 		end
 	end
-	if (overlap(img,exit))then
+	if (overlap(player,exit))then
 		old=map;
 		transition.to(old, {time=750, alpha=0, onComplete=removeObject})
 		room=room+1;
@@ -304,8 +398,6 @@ local function update()
 		map:toBack()
 		transition.to(map, {time=750, delay=750, alpha=1})
 		parse(mapstr..room..".rconfig")
-		exit.x=1000
-		exit.y=1000
 	end
 	xaccel=0;
 	yaccel=0;
