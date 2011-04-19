@@ -152,7 +152,7 @@ local mapstr="images/maps/";
 	--The current zone- naming convention is zone_ROOM#.png
 local zonestr="tut_";
 	--Current room number- starts with 1.
-local room=1;
+local room=3;
 	--Convenience string.
 local ext=".png";
 
@@ -262,6 +262,7 @@ local myListener = function (event)
 end
 
 local function overlap(a, b)
+
 	if (a.x+a.width/2>b.x-b.width/2 and a.x-a.width/2<b.x+b.width/2 and a.y+a.height/2>b.y-b.height/2 and a.y-a.height/2<b.y+b.height/2) then
 		return true
 	else
@@ -284,107 +285,104 @@ local function update()
 		if (math.abs(x)>math.abs(y)) then
 			--If the movement is within the bounds of the map, move the map
 			--If the movement is within the bounds of the screen, move the character
-			local mapmove=false
+			local move=false
+			local movedImg;
 			if (player.x>display.contentWidth/2-5 and player.x<display.contentWidth/2+5 and map.x-15*x+map.width/2>display.contentWidth and map.x-15*x-map.width/2<0) then
-				x=math.floor(-15*x)
-				map:translate(x,0)
-				exit:translate(x,0)
-				local q
-				for q=1,#walls,1 do
-					walls[q]:translate(x,0)
-				end
 				player.x=display.contentWidth/2
-				if (x>0) then
-					direction=1;
-				else
-					direction=3;
-				end
-				mapmove=true
+				movedImg=map
+				move=true
 			else
 				if((x<0 and player.x+15*x-player.width/2>0) or (x>0 and player.x+15*x+player.width/2<display.contentWidth)) then
-					local wallcheck=false
-					local q
-					local qh
-					for q=1,#walls,1 do
-						if (overlap(player,walls[q]) and ((x>0 and player.x<walls[q].x) or (x<0 and player.x>walls[q].x))) then
-							wallcheck=true
-							t.text="Overlap with wall "..q
-						end
-					end
-					if (wallcheck==false) then
-						x=math.floor(15*x)
-						player:translate(x,0)
-					end
-				end
-			end
-
-				if (x>0) then
-					player.currentFrame=1
-				else
-					player.currentFrame=3
-				end
-				if (mapmove==false) then
-					if(x>0) then
-						player.currentFrame=3
-					else
-						player.currentFrame=1
-					end
-				end
-		else
-			local mapmove=false
-			if (player.y>display.contentHeight/2-5 and player.y<display.contentHeight/2+5 and map.y+10*y+map.height/2>display.contentHeight and map.y+10*y-map.height/2<0) then
-				y=math.floor(10*y)
-				player.y=display.contentHeight/2
-				map:translate(0,y)
-				local q
-				for q=1,#walls,1 do
-					walls[q]:translate(0,y)
-				end
-				exit:translate(0,y)
-				if (y>0)then
-					direction=4;
-				else
-					direction=2;
-				end
-				t.text=direction
-				mapmove=true
-			else
-				if ((y>0 and player.y-10*y-player.height/2>0) or (y<0 and player.y+10*y+player.height/2<display.contentHeight)) then
-					local wallcheck=false
-					local q
-					local qh
-					if (y>0) then
-						direction=2
-					else
-						direction=4
-					end
-					for q=1,#walls,1 do
-						--stuck in corners- Address this.
-						if (overlap(player,walls[q]) and ((y>0 and player.y>walls[q].y) or (y<0 and player.y<walls[q].y))) then
-							wallcheck=true
-							qh=q
-							t.text="Overlap with wall "..q
-						end
-					end
-					if (wallcheck==false) then
-						y=math.floor(-10*y)
-						player:translate(0,y)
-					end
+					movedImg=player
+					move=true
 				end
 			end
 			
-				if (y>0) then
-					player.currentFrame=4
-				else
-					player.currentFrame=2
+			local wallcheck=false
+			local q
+			for q=1,#walls,1 do
+				if (overlap(player,walls[q])) then
+					t.text="overlap with wall "..q
 				end
-				if (mapmove==false) then
-					if (y>0) then
-						player.currentFrame=2
+				if (wallcheck==false and overlap(player,walls[q]) and ((x>0 and player.x<walls[q].x) or (x<0 and player.x>walls[q].x))) then
+					move=false
+				end
+			end
+			if (move) then
+				if (movedImg==player) then
+					movedImg:translate(math.floor(15*x), 0)
+					if(x>0) then
+						direction=1;
+						player.currentFrame=3
 					else
-						player.currentFrame=4
+						direction=3
+						player.currentFrame=1
+					end
+				else
+					movedImg:translate(math.floor(-15*x),0)
+					exit:translate(math.floor(-15*x),0)
+					for q=1,#walls, 1 do
+						walls[q]:translate(math.floor(-15*x),0)
+					end
+					if (x>0) then
+						direction=1;
+						player.currentFrame=3
+					else
+						direction=3;
+						player.currentFrame=1
 					end
 				end
+			end
+		else
+
+			local move=false
+			local movedImg;
+			if (player.y>display.contentHeight/2-5 and player.y<display.contentHeight/2+5 and map.y+10*y+map.height/2>display.contentHeight and map.y+10*y-map.height/2<0) then
+				player.y=display.contentHeight/2
+				movedImg=map
+				move=true
+			else
+				if((y<0 and player.y-10*y-player.height/2>0) or (y>0 and player.y-10*y+player.height/2<display.contentHeight)) then
+					movedImg=player
+					move=true
+				end
+			end
+			
+			local wallcheck=false
+			local q
+			for q=1,#walls,1 do
+				if (overlap(player,walls[q])) then
+					t.text="overlap with wall "..q
+				end
+				if (wallcheck==false and overlap(player,walls[q]) and ((y<0 and player.y<walls[q].y) or (y>0 and player.y>walls[q].y))) then
+					move=false
+				end
+			end
+			if (move) then
+				if (movedImg==player) then
+					movedImg:translate(0,math.floor(-10*y))
+					if(y>0) then
+						direction=2;
+						player.currentFrame=4
+					else
+						direction=4
+						player.currentFrame=2
+					end
+				else
+					movedImg:translate(0, math.floor(10*y))
+					exit:translate(0,math.floor(10*y) )
+					for q=1,#walls, 1 do
+						walls[q]:translate(0,math.floor(10*y))
+					end
+					if (y>0) then
+						direction=2;
+						player.currentFrame=4
+					else
+						direction=4;
+						player.currentFrame=2
+					end
+				end
+			end
 		end
 	end
 	if (overlap(player,exit))then

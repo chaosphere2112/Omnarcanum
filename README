@@ -13,7 +13,7 @@ Content Notes:
 	Sprite second drafts completed
 
 Done:
-	Movement- EDITED: Fixed bugs.  God, sometimes I feel dumb. Had some slight errors in edge detection.  System is foolproof- hopefully. EDITED: So, apparently not.  Overlap code was erroneous (missed a /2 on the width of an object).
+	Movement- EDITED: Fixed bugs.  God, sometimes I feel dumb. Had some slight errors in edge detection.  System is foolproof- hopefully. EDITED: So, apparently not.  Overlap code was erroneous (missed a /2 on the width of an object). EDITED: Seriously?  Yes.  Wall overlap was only calculated when the player was at the edge of the screen.  Moved around the movement code so it's a little smarter.  Next edit to this section will make me die on the inside.
 	Room Transitions
 	rconfig parser
 		-Extensible (Add a new field to rconfig, and it'll be a simple task to add the addtional check to the parse function)
