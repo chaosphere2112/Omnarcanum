@@ -5,6 +5,8 @@ It is a game called Omnarcanum, written in Lua and compiled using Corona SDK.
 It will be released on iOS and Android at the completion of my project.
 
 Code Notes:
+	Next step: Implement the element chooser.  Switch the current element displayed in the corner based on where the player drags the button to.
+
 	Parser done.  Walls implemented. Content development to be considered: rconfig files for each map need to be made.  Maps need graphical additions like walls and exits/entrances.  Moving on to game objects- Start with scarecrows (_keep track of what effects them_). 2.rconfig is completed-ish.  Need to come up with a good collision system if I want to not run through enemies and objects.  Too damn many checks.  Don't be like Jack.
 
 

@@ -4,6 +4,9 @@ system.setIdleTimer(false)
 
 display.setStatusBar(display.HiddenStatusBar )
 
+local esprite=sprite.newSpriteSheet("images/elespritesheet",32,32)
+local e=sprite.newSpriteSet(esprite,1,9)
+
 local psprite= sprite.newSpriteSheet("images/playerss1.png",32,32)
 local p =sprite.newSpriteSet(psprite,1,4);
 local player={};
@@ -178,22 +181,6 @@ exit.alpha=.5
 exit.x=map.x+map.width/2-exit.width/2
 exit.y=map.y+map.height/2-2*exit.height
 
-local cards={};
-for q=1, 4, 1 do
-	cards[q]=display.newImage("images/Card.png",64, 96,true);
-end
-
-
-cards[1].y=32;
-cards[2].y=32;
-cards[3].y=display.contentHeight - 32
-cards[4].y=display.contentHeight-32
-cards[1].x=48
-cards[2].x=display.contentWidth-48
-cards[3].x=display.contentWidth-48
-cards[4].x=48
-
-
 b=display.newImage("images/Button.png",200,300, true)
 bd=display.newImage("images/ButtonDown.png",200,300, false)
 bd.isVisible=false;
@@ -218,7 +205,30 @@ run = 0;
 calx=0;
 caly=0;
 
+--"Struct" to keep track of the indices of each element.  Syntax sugar for lightning.
+local Element={}
+Element.fire=1
+Element.air=2
+Element.water=3
+Element.metal=4
+Element.nature=5
+Element.light=6 --Because typing too much is bad...
+Element.lightning=6 --But sometimes I forget things.
+Element.ice=7
+Element.earth=8
+Element.null=9
+
+--So, suggested use is: element.currentFrame=Element["elename"]
+
+
+local element=sprite.newSprite(e)
+element.currentFrame=Element.null
 player:toFront()
+local ele=display.newImage("images/eleButton.png",0,0, true)
+local eledis=display.newImage("images/eleDisplay.png",display.contentWidth-45,5, true)
+element.x=eledis.x
+element.y=eledis.y
+element:toFront()
 --img:toFront()
 local removeObject= function(obj)
 	if (obj~=nil) then
