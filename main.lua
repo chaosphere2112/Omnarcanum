@@ -155,7 +155,7 @@ local mapstr="images/maps/";
 	--The current zone- naming convention is zone_ROOM#.png
 local zonestr="tut_";
 	--Current room number- starts with 1.
-local room=3;
+local room=1;
 	--Convenience string.
 local ext=".png";
 
@@ -230,10 +230,43 @@ element.x=eledis.x
 element.y=eledis.y
 element:toFront()
 --img:toFront()
+local mask=display.newImage("images/elemask.png",0,0,true)
+mask.x=ele.x
+mask.y=ele.y
 local removeObject= function(obj)
 	if (obj~=nil) then
 		obj:removeSelf()
 	end
+end
+local lasttheta=0;
+local eleListener= function(event)
+	--Determine which of the eight directions the touch was mostly in the direction of.  Should be easy!
+	local x=event.xStart-event.x
+	local y=event.yStart-event.y
+	
+	local theta=math.atan2(x,y)
+	theta=theta+math.pi
+	local jump=false
+	if (theta<0)then
+		jump=true
+		theta=theta+2*math.pi
+	end
+	local j2=false
+	if (theta>2*math.pi) then
+		j2=true
+		theta=theta-2*math.pi
+	end
+	
+	if (theta<lasttheta or (theta>lasttheta and j2)) then
+		ele:rotate(theta*180/math.pi/80)	
+	else
+		if((theta<lasttheta and jump) or theta>lasttheta) then
+			ele:rotate(theta*180/math.pi/80*-1)
+		end
+	end
+	lasttheta=theta
+
+	return true
 end
 
 local buttonlistener = function (event)
@@ -414,6 +447,7 @@ end
 
 bd:addEventListener("touch",buttonlistener)
 b:addEventListener("touch", buttonlistener)
+ele:addEventListener("touch",eleListener)
 system.setAccelerometerInterval(60)
 Runtime:addEventListener("accelerometer", myListener)
 timer.performWithDelay(33, update, 0);
