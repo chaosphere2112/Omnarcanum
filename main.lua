@@ -277,9 +277,6 @@ elements[3].x=cards[3].x
 elements[4].y=cards[4].y
 elements[4].x=cards[4].x
 
-b=display.newImage("images/Button.png",200,300, true)
-bd=display.newImage("images/ButtonDown.png",200,300, false)
-bd.isVisible=false;
 
 
 
@@ -609,7 +606,7 @@ local function update()
 							transition.to(v3, {time=1000, alpha=0, onComplete=postburn})
 						else
 							if (v3.tname=="objects") then
-								if (spell[i].ele==Element.fire and v3.fire==true) then
+								if (spell[v].ele==Element.fire and v3.fire==true) then
 									v3.isVisible=false;
 								end
 							end
@@ -773,9 +770,6 @@ cards[1]:addEventListener("touch",shoot1)
 cards[2]:addEventListener("touch",shoot2)
 cards[3]:addEventListener("touch",shoot3)
 cards[4]:addEventListener("touch",shoot4)
-
-bd:addEventListener("touch",buttonlistener)
-b:addEventListener("touch", buttonlistener)
 system.setAccelerometerInterval(60)
 Runtime:addEventListener("accelerometer", myListener)
 timer.performWithDelay(33, update, 0);
